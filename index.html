@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موسوعة القرآن الكريم - المصحف الإلكتروني</title>
+    <style>
+        :root {
+            --primary: #0A5E2A;
+            --gold: #D4AF37;
+            --white: #FFFFFF;
+            --dark-bg: #1A1A1A;
+            --dark-text: #E0E0E0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Amiri', Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--white);
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), #074c21);
+            color: var(--white);
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .toggle-dark {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--gold);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            color: #333;
+            font-weight: bold;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: var(--primary);
+            padding: 0.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            color: var(--white);
+            padding: 0.8rem 1.5rem;
+            margin: 0 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        nav button:hover, nav button.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .container {
+            display: flex;
+            min-height: calc(100vh - 120px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #f5f5f5;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .dark-mode .sidebar {
+            background-color: #2a2a2a;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .dark-mode .card {
+            background-color: #2a2a2a;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 0.5rem;
+        }
+
+        .dark-mode .card h2 {
+            color: var(--gold);
+        }
+
+        .aya {
+            font-size: 1.5rem;
+            line-height: 2.5rem;
+            text-align: center;
+            margin: 1rem 0;
+            color: #333;
+        }
+
+        .dark-mode .aya {
+            color: var(--dark-text);
+        }
+
+        .translation {
+            font-size: 1rem;
+            color: #666;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .dark-mode .translation {
+            color: #aaa;
+        }
+
+        .reciters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .reciter {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .reciter:hover {
+            background-color: #074c21;
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .prayer-times {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .prayer-time {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 0.8rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .prayer-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .prayer-time-value {
+            font-size: 1.1rem;
+        }
+
+        .hadith {
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border-right: 4px solid var(--primary);
+        }
+
+        .dark-mode .hadith {
+            background-color: #333;
+        }
+
+        .hadith-text {
+            font-size: 1.1rem;
+            line-height: 1.8rem;
+        }
+
+        .hadith-meta {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .dark-mode .hadith-meta {
+            color: #aaa;
+        }
+
+        .hadith-grade {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        .grade-sahih {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .dark-mode .grade-sahih {
+            background-color: #155724;
+            color: #d4edda;
+        }
+
+        .grade-hasan {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .dark-mode .grade-hasan {
+            background-color: #856404;
+            color: #fff3cd;
+        }
+
+        .grade-daif {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .dark-mode .grade-daif {
+            background-color: #721c24;
+            color: #f8d7da;
+        }
+
+        .azkar-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .zekr {
+            flex: 1 1 300px;
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .dark-mode .zekr {
+            background-color: #333;
+        }
+
+        .zekr-text {
+            font-size: 1.1rem;
+            line-height: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .zekr-count {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .dark-mode .zekr-count {
+            color: var(--gold);
+        }
+
+        .counter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .counter-display {
+            font-size: 2rem;
+            margin: 0 1rem;
+            color: var(--primary);
+        }
+
+        .dark-mode .counter-display {
+            color: var(--gold);
+        }
+
+        .counter-btn {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .counter-btn:hover {
+            background-color: #074c21;
+        }
+
+        footer {
+            background-color: var(--primary);
+            color: var(--white);
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+            nav {
+                flex-wrap: wrap;
+            }
+            nav button {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>موسوعة القرآن الكريم</h1>
+        <p>موقع متكامل للقرآن، الأذكار، الأحاديث ومواعيد الصلاة</p>
+        <button class="toggle-dark" id="darkModeToggle">الوضع الليلي</button>
+    </header>
+
+    <nav>
+        <button class="active" data-section="home">الرئيسية</button>
+        <button data-section="quran">القرآن الكريم</button>
+        <button data-section="azkar">الأذكار والأدعية</button>
+        <button data-section="radio">إذاعة القرآن</button>
+        <button data-section="prayer">مواعيد الصلاة</button>
+        <button data-section="hadith">الأحاديث النبوية</button>
+    </nav>
+
+    <div class="container">
+        <aside class="sidebar" id="sidebar">
+            <!-- سيتم ملؤها ديناميكيًا حسب القسم النشط -->
+        </aside>
+
+        <main class="main-content" id="mainContent">
+            <!-- الصفحة الرئيسية -->
+            <section id="home-section">
+                <div class="card">
+                    <h2>آية اليوم</h2>
+                    <div class="aya" id="randomAya"></div>
+                    <div class="translation" id="randomAyaTranslation"></div>
+                </div>
+
+                <div class="card">
+                    <h2>دعاء اليوم</h2>
+                    <div id="randomDua"></div>
+                </div>
+
+                <div class="card">
+                    <h2>حديث اليوم</h2>
+                    <div id="randomHadith"></div>
+                </div>
+            </section>
+
+            <!-- قسم القرآن الكريم -->
+            <section id="quran-section" style="display: none;">
+                <div class="card">
+                    <h2>تلاوة القرآن الكريم</h2>
+                    <div class="reciters">
+                        <button class="reciter" data-reciter="ar.alafasy">مشاري العفاسي</button>
+                        <button class="reciter" data-reciter="ar.husary">محمود خليل الحصري</button>
+                        <button class="reciter" data-reciter="ar.abdulsamad">عبد الباسط عبد الصمد</button>
+                        <button class="reciter" data-reciter="ar.sudais">السديس</button>
+                    </div>
+                    <audio controls id="quranAudio"></audio>
+                </div>
+
+                <div class="card">
+                    <h2>تصفح المصحف</h2>
+                    <div id="surahsList"></div>
+                </div>
+            </section>
+
+            <!-- قسم الأذكار والأدعية -->
+            <section id="azkar-section" style="display: none;">
+                <div class="card">
+                    <h2>أذكار الصباح والمساء</h2>
+                    <div class="azkar-list" id="morningAzkar"></div>
+                </div>
+
+                <div class="card">
+                    <h2>أدعية مختارة</h2>
+                    <div class="azkar-list" id="duasList"></div>
+                </div>
+
+                <div class="card">
+                    <h2>السبحة الإلكترونية</h2>
+                    <div class="counter">
+                        <button class="counter-btn" id="decrementBtn">-</button>
+                        <div class="counter-display" id="counterDisplay">0</div>
+                        <button class="counter-btn" id="incrementBtn">+</button>
+                    </div>
+                    <button style="margin-top: 1rem; width: 100%;" class="reciter" id="resetCounter">إعادة تعيين</button>
+                </div>
+            </section>
+
+            <!-- قسم إذاعة القرآن الكريم -->
+            <section id="radio-section" style="display: none;">
+                <div class="card">
+                    <h2>بث مباشر من إذاعة القرآن الكريم</h2>
+                    <audio controls>
+                        <source src="https://qurango.net/radio/tarateel" type="audio/mpeg">
+                        متصفحك لا يدعم تشغيل الصوت.
+                    </audio>
+                    <div style="margin-top: 1rem;">
+                        <h3>إذاعات أخرى:</h3>
+                        <button class="reciter" data-radio="https://qurango.net/radio/tarateel">إذاعة القرآن الكريم - السعودية</button>
+                        <button class="reciter" data-radio="http://live.radiohura.com/radio/8000/radio.mp3">إذاعة هدى القرآن - الأردن</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- قسم مواعيد الصلاة -->
+            <section id="prayer-section" style="display: none;">
+                <div class="card">
+                    <h2>مواعيد الصلاة</h2>
+                    <div class="prayer-times" id="prayerTimes">
+                        <!-- سيتم ملؤها ديناميكيًا -->
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <select id="citySelect" style="padding: 0.5rem; width: 100%; margin-top: 1rem;">
+                            <option value="Riyadh">الرياض</option>
+                            <option value="Cairo">القاهرة</option>
+                            <option value="Dubai">دبي</option>
+                            <option value="Mecca">مكة المكرمة</option>
+                            <option value="Medina">المدينة المنورة</option>
+                        </select>
+                        <button class="reciter" style="margin-top: 1rem; width: 100%;" id="updatePrayerTimes">تحديث المواعيد</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- قسم الأحاديث النبوية -->
+            <section id="hadith-section" style="display: none;">
+                <div class="card">
+                    <h2>الأحاديث النبوية</h2>
+                    <div id="hadithsContainer"></div>
+                    <button class="reciter" style="margin-top: 1rem; width: 100%;" id="loadMoreHadiths">تحميل المزيد</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>© 2023 موسوعة القرآن الكريم | جميع الحقوق محفوظة</p>
+    </footer>
+
+    <script>
+        // بيانات الموقع
+        const data = {
+            quran: {
+                surahs: [
+                    {name: "الفاتحة", ayas: 7, number: 1},
+                    {name: "البقرة", ayas: 286, number: 2},
+                    {name: "آل عمران", ayas: 200, number: 3},
+                    // ... يمكن إضافة كل السور هنا
+                ],
+                reciters: {
+                    "ar.alafasy": "مشاري العفاسي",
+                    "ar.husary": "محمود خليل الحصري",
+                    "ar.abdulsamad": "عبد الباسط عبد الصمد",
+                    "ar.sudais": "السديس"
+                },
+                randomAyahs: [
+                    {
+                        text: "وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ ۖ أُجِيبُ دَعْوَةَ الدَّاعِ إِذَا دَعَانِ ۖ فَلْيَسْتَجِيبُوا لِي وَلْيُؤْمِنُوا بِي لَعَلَّهُمْ يَرْشُدُونَ",
+                        translation: "وإذا سألك عبادي عني فإني قريب أجيب دعوة الداع إذا دعان فليستجيبوا لي وليؤمنوا بي لعلهم يرشدون",
+                        surah: "البقرة",
+                        number: 186
+                    },
+                    // ... المزيد من الآيات
+                ]
+            },
+            azkar: {
+                morning: [
+                    {
+                        text: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+                        count: 1
+                    },
+                    // ... المزيد من الأذكار
+                ],
+                duas: [
+                    {
+                        text: "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا طَيِّبًا، وَعَمَلًا مُتَقَبَّلًا",
+                        category: "دعاء عام"
+                    },
+                    // ... المزيد من الأدعية
+                ]
+            },
+            hadiths: [
+                {
+                    text: "من قال لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير، في يوم مائة مرة، كانت له عدل عشر رقاب، وكتبت له مائة حسنة، ومحيت عنه مائة سيئة، وكانت له حرزاً من الشيطان يومه ذلك حتى يمسي، ولم يأت أحد بأفضل مما جاء به إلا أحد عمل أكثر من ذلك",
+                    source: "صحيح البخاري",
+                    grade: "صحيح"
+                },
+                // ... المزيد من الأحاديث
+            ],
+            prayerTimes: {
+                Riyadh: {
+                    Fajr: "4:30 AM",
+                    Dhuhr: "12:15 PM",
+                    Asr: "3:30 PM",
+                    Maghrib: "6:45 PM",
+                    Isha: "8:15 PM"
+                },
+                // ... مواعيد مدن أخرى
+            }
+        };
+
+        // DOM العناصر
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const navButtons = document.querySelectorAll('nav button');
+        const sections = document.querySelectorAll('main section');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+
+        // العدادات والمتغيرات
+        let currentCounter = 0;
+        let currentSection = 'home';
+        let displayedHadiths = 3;
+
+        // تهيئة الموقع
+        document.addEventListener('DOMContentLoaded', function() {
+            // تفعيل الوضع الليلي إذا كان مفعلًا مسبقًا
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.textContent = 'الوضع النهاري';
+            }
+
+            // تعيين الصفحة الرئيسية
+            showSection('home');
+            loadRandomContent();
+            setupCounter();
+            loadPrayerTimes('Riyadh');
+        });
+
+        // تبديل الوضع الليلي
+        darkModeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('darkMode', 'enabled');
+                darkModeToggle.textContent = 'الوضع النهاري';
+            }
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>القرآن الكريم - موقع متكامل</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0A5E2A;
+            --secondary-color: #D4AF37;
+            --text-color: #333;
+            --bg-color: #f9f9f9;
+            --card-bg: #fff;
+            --dark-bg: #1a1a1a;
+            --dark-card: #2d2d2d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Amiri', serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            background-color: var(--dark-bg);
+            color: #eee;
+            --card-bg: var(--dark-card);
+            --text-color: #eee;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: var(--secondary-color);
+            padding: 0.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1542816417-098367509469');
+            background-size: cover;
+            background-position: center;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .random-content {
+            text-align: center;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin: 1rem 0;
+        }
+
+        .random-content .verse {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0a4a22;
+        }
+
+        .dark-mode-btn {
+            background-color: var(--secondary-color);
+        }
+
+        .sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .section-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .section-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .section-card i {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .section-card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        /* Styles for prayer times */
+        .prayer-times {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .prayer-time {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.8rem;
+            border-radius: 5px;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            nav {
+                flex-wrap: wrap;
+            }
+            
+            nav a {
+                margin: 0.2rem;
+                padding: 0.3rem 0.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .sections {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>موقع القرآن الكريم المتكامل</h1>
+        <p>كل ما تحتاجه في مكان واحد</p>
+    </header>
+
+    <nav>
+        <a href="#" class="active" data-section="home"><i class="fas fa-home"></i> الرئيسية</a>
+        <a href="#" data-section="quran"><i class="fas fa-book-quran"></i> القرآن الكريم</a>
+        <a href="#" data-section="prayers"><i class="fas fa-clock"></i> مواعيد الصلاة</a>
+        <a href="#" data-section="adhkar"><i class="fas fa-pray"></i> الأذكار والأدعية</a>
+        <a href="#" data-section="radio"><i class="fas fa-broadcast-tower"></i> إذاعة القرآن</a>
+        <a href="#" data-section="hadith"><i class="fas fa-book"></i> الأحاديث النبوية</a>
+    </nav>
+
+    <div class="container">
+        <section id="home-section">
+            <div class="hero">
+                <div>
+                    <h1>مرحبًا بكم في موقع القرآن الكريم</h1>
+                    <p>تصفح القرآن، استمع للتلاوات، واحفظ الأذكار والأدعية</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>آية عشوائية</h2>
+                <div class="random-content">
+                    <p class="verse">"وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ ۖ أُجِيبُ دَعْوَةَ الدَّاعِ إِذَا دَعَانِ ۖ فَلْيَسْتَجِيبُوا لِي وَلْيُؤْمِنُوا بِي لَعَلَّهُمْ يَرْشُدُونَ"</p>
+                    <p>سورة البقرة - الآية 186</p>
+                </div>
+                <div class="controls">
+                    <button id="random-verse">آية أخرى</button>
+                    <button id="dark-mode" class="dark-mode-btn"><i class="fas fa-moon"></i> الوضع الليلي</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>دعاء عشوائي</h2>
+                <div class="random-content">
+                    <p>"اللهم إني أسألك علماً نافعاً، ورزقاً طيباً، وعملاً متقبلاً"</p>
+                    <p>دعاء مأثور</p>
+                </div>
+                <div class="controls">
+                    <button id="random-dua">دعاء آخر</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>حديث عشوائي</h2>
+                <div class="random-content">
+                    <p>"من سلك طريقاً يلتمس فيه علماً سهل الله له به طريقاً إلى الجنة"</p>
+                    <p>صحيح مسلم</p>
+                </div>
+                <div class="controls">
+                    <button id="random-hadith">حديث آخر</button>
+                </div>
+            </div>
+
+            <h2>أقسام الموقع</h2>
+            <div class="sections">
+                <div class="section-card" data-section="quran">
+                    <i class="fas fa-book-quran"></i>
+                    <h3>القرآن الكريم</h3>
+                    <p>تصفح المصحف الشامل مع التلاوات</p>
+                </div>
+                <div class="section-card" data-section="prayers">
+                    <i class="fas fa-clock"></i>
+                    <h3>مواعيد الصلاة</h3>
+                    <p>مواقيت الصلاة حسب مدينتك</p>
+                </div>
+                <div class="section-card" data-section="adhkar">
+                    <i class="fas fa-pray"></i>
+                    <h3>الأذكار والأدعية</h3>
+                    <p>أذكار الصباح والمساء وأدعية مأثورة</p>
+                </div>
+                <div class="section-card" data-section="radio">
+                    <i class="fas fa-broadcast-tower"></i>
+                    <h3>إذاعة القرآن</h3>
+                    <p>استمع للقرآن الكريم مباشرة</p>
+                </div>
+                <div class="section-card" data-section="hadith">
+                    <i class="fas fa-book"></i>
+                    <h3>الأحاديث النبوية</h3>
+                    <p>أحاديث صحيحة مع تصنيفها</p>
+                </div>
+                <div class="section-card" data-section="tasbeeh">
+                    <i class="fas fa-hands-praying"></i>
+                    <h3>سبحة إلكترونية</h3>
+                    <p>عدّد أذكارك بسهولة</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quran Section (hidden by default) -->
+        <section id="quran-section" style="display: none;">
+            <div class="card">
+                <h2><i class="fas fa-book-quran"></i> القرآن الكريم</h2>
+                <p>تصفح سور القرآن الكريم واستمع إلى تلاوات أشهر القراء</p>
+                
+                <div style="margin-top: 1rem;">
+                    <input type="text" id="search-quran" placeholder="ابحث في القرآن..." style="padding: 0.5rem; width: 100%; max-width: 500px;">
+                </div>
+                
+                <div id="surah-list" style="margin-top: 1.5rem;">
+                    <!-- Surahs will be loaded here by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Prayer Times Section (hidden by default) -->
+        <section id="prayers-section" style="display: none;">
+            <div class="card">
+                <h2><i class="fas fa-clock"></i> مواعيد الصلاة</h2>
+                
+                <div style="margin: 1rem 0;">
+                    <label for="city-select">اختر مدينتك: </label>
+                    <select id="city-select" style="padding: 0.5rem;">
+                        <option value="riyadh">الرياض</option>
+                        <option value="makkah">مكة المكرمة</option>
+                        <option value="madina">المدينة المنورة</option>
+                        <option value="cairo">القاهرة</option>
+                        <option value="dubai">دبي</option>
+                    </select>
+                </div>
+                
+                <div class="prayer-times">
+                    <div class="prayer-time">
+                        <h3>الفجر</h3>
+                        <p id="fajr-time">4:30 ص</p>
+                    </div>
+                    <div class="prayer-time">
+                        <h3>الشروق</h3>
+                        <p id="sunrise-time">5:45 ص</p>
+                    </div>
+                    <div class="prayer-time">
+                        <h3>الظهر</h3>
+                        <p id="dhuhr-time">12:15 م</p>
+                    </div>
+                    <div class="prayer-time">
+                        <h3>العصر</h3>
+                        <p id="asr-time">3:30 م</p>
+                    </div>
+                    <div class="prayer-time">
+                        <h3>المغرب</h3>
+                        <p id="maghrib-time">6:45 م</p>
+                    </div>
+                    <div class="prayer-time">
+                        <h3>العشاء</h3>
+                        <p id="isha-time">8:15 م</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Adhkar Section (hidden by default) -->
+        <section id="adhkar-section" style="display: none;">
+            <div class="card">
+                <h2><i class="fas fa-pray"></i> الأذكار والأدعية</h2>
+                
+                <div style="margin-top: 1rem;">
+                    <div class="adhkar-tabs">
+                        <button class="adhkar-tab active" data-category="morning">أذكار الصباح</button>
+                        <button class="adhkar-tab" data-category="evening">أذكار المساء</button>
+                        <button class="adhkar-tab" data-category="sleep">أذكار النوم</button>
+                        <button class="adhkar-tab" data-category="prayer">أذكار الصلاة</button>
+                        <button class="adhkar-tab" data-category="general">أدعية عامة</button>
+                    </div>
+                    
+                    <div id="adhkar-content" style="margin-top: 1.5rem;">
+                        <!-- Adhkar will be loaded here by JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2><i class="fas fa-hands-praying"></i> سبحة إلكترونية</h2>
+                
+                <div style="text-align: center; margin: 1.5rem 0;">
+                    <div id="counter" style="font-size: 3rem; color: var(--primary-color);">0</div>
+                    <div style="margin: 1rem 0;">
+                        <button id="count-btn" style="font-size: 1.2rem; padding: 1rem 2rem;"><i class="fas fa-plus"></i> اضغط للعد</button>
+                        <button id="reset-counter" style="margin-left: 1rem;">إعادة تعيين</button>
+                    </div>
+                    <div>
+                        <select id="dhikr-select" style="padding: 0.5rem;">
+                            <option value="سبحان الله">سبحان الله</option>
+                            <option value="الحمد لله">الحمد لله</option>
+                            <option value="الله أكبر">الله أكبر</option>
+                            <option value="لا إله إلا الله">لا إله إلا الله</option>
+                            <option value="أستغفر الله">أستغفر الله</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Radio Section (hidden by default) -->
+        <section id="radio-section" style="display: none;">
+            <div class="card">
+                <h2><i class="fas fa-broadcast-tower"></i> إذاعة القرآن الكريم</h2>
+                
+                <div style="margin-top: 1.5rem;">
+                    <div class="radio-station">
+                        <h3>إذاعة القرآن الكريم - السعودية</h3>
+                        <audio controls style="width: 100%; margin: 0.5rem 0;">
+                            <source src="https://qurango.net/radio/tarateel" type="audio/mpeg">
+                            متصفحك لا يدعم تشغيل الصوت.
+                        </audio>
+                    </div>
+                    
+                    <div class="radio-station" style="margin-top: 1.5rem;">
+                        <h3>إذاعة القرآن الكريم - مصر</h3>
+                        <audio controls style="width: 100%; margin: 0.5rem 0;">
+                            <source src="https://qurango.net/radio/mix" type="audio/mpeg">
+                            متصفحك لا يدعم تشغيل الصوت.
+                        </audio>
+                    </div>
+                    
+                    <div
+                    <div class="radio-station" style="margin-top: 1.5rem;">
+                        <h3>إذاعة القرآن الكريم - الإمارات</h3>
+                        <audio controls style="width: 100%; margin: 0.5rem 0;">
+                            <source src="https://qurango.net/radio/mishary" type="audio/mpeg">
+                            متصفحك لا يدعم تشغيل الصوت.
+                        </audio>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hadith Section (hidden by default) -->
+        <section id="hadith-section" style="display: none;">
+            <div class="card">
+                <h2><i class="fas fa-book"></i> الأحاديث النبوية</h2>
+                
+                <div style="margin-top: 1rem;">
+                    <input type="text" id="search-hadith" placeholder="ابحث في الأحاديث..." style="padding: 0.5rem; width: 100%; max-width: 500px;">
+                </div>
+                
+                <div id="hadith-list" style="margin-top: 1.5rem;">
+                    <!-- Hadiths will be loaded here by JavaScript -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>© 2023 موقع القرآن الكريم المتكامل. جميع الحقوق محفوظة.</p>
+    </footer>
+
+    <script>
+        // ============ JavaScript للتحكم في الموقع ============
+        const body = document.body;
+        const darkModeBtn = document.getElementById('dark-mode');
+        const navLinks = document.querySelectorAll('nav a');
+        const sections = document.querySelectorAll('section');
+        const randomVerseBtn = document.getElementById('random-verse');
+        const randomDuaBtn = document.getElementById('random-dua');
+        const randomHadithBtn = document.getElementById('random-hadith');
+        const counter = document.getElementById('counter');
+        const countBtn = document.getElementById('count-btn');
+        const resetCounterBtn = document.getElementById('reset-counter');
+        const dhikrSelect = document.getElementById('dhikr-select');
+        const citySelect = document.getElementById('city-select');
+        const prayerTimes = {
+            fajr: document.getElementById('fajr-time'),
+            sunrise: document.getElementById('sunrise-time'),
+            dhuhr: document.getElementById('dhuhr-time'),
+            asr: document.getElementById('asr-time'),
+            maghrib: document.getElementById('maghrib-time'),
+            isha: document.getElementById('isha-time')
+        };
+
+        // بيانات عشوائية للعرض
+        const verses = [
+            { text: "وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ ۖ أُجِيبُ دَعْوَةَ الدَّاعِ إِذَا دَعَانِ ۖ فَلْيَسْتَجِيبُوا لِي وَلْيُؤْمِنُوا بِي لَعَلَّهُمْ يَرْشُدُونَ", source: "سورة البقرة - الآية 186" },
+            { text: "إِنَّ اللَّهَ مَعَ الَّذِينَ اتَّقَوْا وَالَّذِينَ هُمْ مُحْسِنُونَ", source: "سورة النحل - الآية 128" },
+            { text: "وَمَنْ يَتَّقِ اللَّهَ يَجْعَلْ لَهُ مَخْرَجًا", source: "سورة الطلاق - الآية 2" }
+        ];
+
+        const duas = [
+            { text: "اللهم إني أسألك علماً نافعاً، ورزقاً طيباً، وعملاً متقبلاً", source: "دعاء مأثور" },
+            { text: "اللهم اغفر لي وارحمني واهدني وعافني وارزقني", source: "دعاء مأثور" },
+            { text: "اللهم إني أعوذ بك من الهم والحزن، والعجز والكسل، والجبن والبخل، وضلع الدين وغلبة الرجال", source: "دعاء مأثور" }
+        ];
+
+        const hadiths = [
+            { text: "من سلك طريقاً يلتمس فيه علماً سهل الله له به طريقاً إلى الجنة", source: "صحيح مسلم" },
+            { text: "الكلمة الطيبة صدقة", source: "صحيح البخاري" },
+            { text: "لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه", source: "صحيح البخاري" }
+        ];
+
+        // ============ وظائف عامة ============
+        function toggleDarkMode() {
+            body.classList.toggle('dark-mode');
+            darkModeBtn.innerHTML = body.classList.contains('dark-mode') ? '<i class="fas fa-sun"></i> الوضع النهاري' : '<i class="fas fa-moon"></i> الوضع الليلي';
+        }
+
+        function showSection(sectionId) {
+            sections.forEach(section => section.style.display = 'none');
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        function getRandomItem(items) {
+            return items[Math.floor(Math.random() * items.length)];
+        }
+
+        function updateRandomVerse() {
+            const verse = getRandomItem(verses);
+            document.querySelector('.random-content .verse').textContent = verse.text;
+            document.querySelector('.random-content p').textContent = verse.source;
+        }
+
+        function updateRandomDua() {
+            const dua = getRandomItem(duas);
+            document.querySelector('#adhkar-section .random-content p').textContent = dua.text;
+        }
+
+        function updateRandomHadith() {
+            const hadith = getRandomItem(hadiths);
+            document.querySelector('#hadith-section .random-content p').textContent = hadith.text;
+        }
+
+        function updatePrayerTimes(city) {
+            const times = {
+                riyadh: { fajr: '4:30 ص', sunrise: '5:45 ص', dhuhr: '12:15 م', asr: '3:30 م', maghrib: '6:45 م', isha: '8:15 م' },
+                makkah: { fajr: '4:15 ص', sunrise: '5:30 ص', dhuhr: '12:00 م', asr: '3:15 م', maghrib: '6:30 م', isha: '8:00 م' },
+                madina: { fajr: '4:20 ص', sunrise: '5:35 ص', dhuhr: '12:05 م', asr: '3:20 م', maghrib: '6:35 م', isha: '8:05 م' },
+                cairo: { fajr: '4:00 ص', sunrise: '5:15 ص', dhuhr: '11:45 م', asr: '3:00 م', maghrib: '6:15 م', isha: '7:45 م' },
+                dubai: { fajr: '4:10 ص', sunrise: '5:25 ص', dhuhr: '12:00 م', asr: '3:10 م', maghrib: '6:25 م', isha: '7:55 م' }
+            };
+
+            const selectedTimes = times[city];
+            for (const [key, value] of Object.entries(selectedTimes)) {
+                prayerTimes[key].textContent = value;
+            }
+        }
+
+        // ============ تهيئة الأحداث ============
+        darkModeBtn.addEventListener('click', toggleDarkMode);
+        randomVerseBtn.addEventListener('click', updateRandomVerse);
+        randomDuaBtn.addEventListener('click', updateRandomDua);
+        randomHadithBtn.addEventListener('click', updateRandomHadith);
+        citySelect.addEventListener('change', (e) => updatePrayerTimes(e.target.value));
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const sectionId = e.target.getAttribute('data-section') + '-section';
+                showSection(sectionId);
+            });
+        });
+
+        // ============ تهيئة الموقع ============
+        updateRandomVerse();
+        updateRandomDua();
+        updateRandomHadith();
+        updatePrayerTimes(citySelect.value);
+
+        // ============ سبحة إلكترونية ============
+        let count = 0;
+        countBtn.addEventListener('click', () => {
+            count++;
+            counter.textContent = count;
+            countBtn.textContent = dhikrSelect.value;
+        });
+
+        resetCounterBtn.addEventListener('click', () => {
+            count = 0;
+            counter.textContent = count;
+            countBtn.textContent = '<i class="fas fa-plus"></i> اضغط للعد';
+        });
+
+        dhikrSelect.addEventListener('change', () => {
+            countBtn.textContent = dhikrSelect.value;
+        });
+    </script>
+</body>
+</html>
